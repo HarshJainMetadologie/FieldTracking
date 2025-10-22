@@ -13,7 +13,7 @@ export default class OpportunityFieldTracking extends LightningElement {
         { label: 'Old Value', fieldName: 'Harsh02__Old_Value__c' },
         { label: 'New Value', fieldName: 'Harsh02__New_Value__c' },
         { label: 'User', fieldName: 'Harsh02__User__c' },
-        { label: 'Opportunity Name', fieldName: 'Harsh02__Identification__c' }
+        { label: 'Identifier', fieldName: 'Harsh02__Identification__c' }
     ];
 
     @wire(getOpportunityTracking)

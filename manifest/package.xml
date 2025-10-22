@@ -1,36 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
-        <members>*</members>
+        <members>FieldTrackingController</members>
+        <members>FieldTrackingHandler</members>
         <name>ApexClass</name>
     </types>
     <types>
-        <members>*</members>
-        <name>ApexComponent</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>ApexPage</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>ApexTestSuite</name>
-    </types>
-    <types>
-        <members>*</members>
+        <members>contactTrigger</members>
+        <members>OpportunityTrigger</members>
         <name>ApexTrigger</name>
     </types>
     <types>
-        <members>*</members>
-        <name>AuraDefinitionBundle</name>
+        <members>FieldTracking/New_Fields_Tracking_Report_sOh</members>
+        <members>FieldTracking/Tracking_Delete_Operation_Report_Hmy</members>
+        <members>FieldTracking/Tracking_Total_Operation_Contact_i1Y1</members>
+        <members>FieldTracking/Tracking_Total_Operation_Report_fYf</members>
+        <members>FieldTracking/Tracking_Update_Operation_Report_HpQ</members>
+        <name>Report</name>
     </types>
     <types>
-        <members>*</members>
+        <members>FieldTrackingTask/lCPKgcdjZsDVYdLTFieVSXUsWPFWxL</members>
+        <name>Dashboard</name>
+    </types>
+    <types>
+        <members>opportunityFieldTracking</members>
         <name>LightningComponentBundle</name>
     </types>
     <types>
-        <members>*</members>
-        <name>StaticResource</name>
+        <members>Harsh02__Fields_Tracking_Object</members>
+        <members>Fields_Tracking_App</members>
+        <name>PermissionSet</name>
     </types>
+    <types>
+        <members>Harsh02__Field_Tracking__c</members>
+        <name>CustomTab</name>
+    </types>
+
     <version>64.0</version>
 </Package>

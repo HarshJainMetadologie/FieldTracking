@@ -1,4 +1,4 @@
-trigger OpportunityTrigger on Opportunity (after insert, after update, after delete, after undelete) {
+trigger contactTrigger on Contact (after insert, after update, after delete, after undelete) {
     if (Trigger.isAfter) {
         if (Trigger.isInsert) {
             FieldTrackingHandler.trackChanges(Trigger.new, null, 'INSERT');

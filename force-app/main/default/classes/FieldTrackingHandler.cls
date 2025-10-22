@@ -12,7 +12,10 @@ public with sharing class FieldTrackingHandler {
         }
     }
 
-    private static List<String> fieldsToTrack = new List<String>{'Name','StageName','CloseDate','Amount','OwnerId'};
+    private static Map<String, List<String>> objectFieldsMap = new Map<String, List<String>>{
+        'Opportunity' => new List<String>{'Name','StageName','CloseDate','Amount','OwnerId'},
+        'Contact'     => new List<String>{'FirstName','LastName','Email','Phone','OwnerId'}
+    };
 
     public static void trackChanges(List<SObject> newList, Map<Id, SObject> oldMap, String operationType) {
 
@@ -28,8 +31,21 @@ public with sharing class FieldTrackingHandler {
 
             SObject oldRecord = (operationType == 'DELETE') ? record : (oldMap != null ? oldMap.get(record.Id) : null);
             String objectName = record.getSObjectType().getDescribe().getName();
-            String identification = (oldRecord != null) ? String.valueOf(oldRecord.get('Name')) : String.valueOf(record.get('Name'));
+            String identification;
 
+// For Opportunity, use Name
+        if (objectName == 'Opportunity') {
+            identification = (oldRecord != null) ? String.valueOf(oldRecord.get('Name')) : String.valueOf(record.get('Name'));
+
+        } else if (objectName == 'Contact') {
+            String firstName = (oldRecord != null) ? String.valueOf(oldRecord.get('FirstName')) : String.valueOf(record.get('FirstName'));
+            String lastName  = (oldRecord != null) ? String.valueOf(oldRecord.get('LastName')) : String.valueOf(record.get('LastName'));
+            identification = (firstName != null ? firstName : '') + ' ' + (lastName != null ? lastName : '');
+            
+        } else {
+            identification = (oldRecord != null) ? String.valueOf(oldRecord.get('Name')) : String.valueOf(record.get('Name'));
+        }
+            List<String> fieldsToTrack = objectFieldsMap.containsKey(objectName) ? objectFieldsMap.get(objectName) : new List<String>{};
             for (String fieldName : fieldsToTrack) {
                 Object oldVal;
                 Object newVal;

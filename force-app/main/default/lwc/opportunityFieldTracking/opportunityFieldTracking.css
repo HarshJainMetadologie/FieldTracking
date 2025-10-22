@@ -1,17 +1,10 @@
-.status-insert {
-    background-color: #e6ffe6; /* light green */
-    color: #0a7d00;
-    font-weight: bold;
+.update-row {
+    background-color: #73b3f8;
 }
 
-.status-update {
-    background-color: #e6f0ff; /* light blue */
-    color: #0047b3;
-    font-weight: bold;
+.delete-row {
+    background-color: #f97782; 
 }
-
-.status-delete {
-    background-color: #ffe6e6; /* light red */
-    color: #b30000;
-    font-weight: bold;
+.insert-row {
+    background-color: #9ffbb5; 
 }
