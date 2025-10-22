@@ -1,0 +1,17 @@
+.status-insert {
+    background-color: #e6ffe6; /* light green */
+    color: #0a7d00;
+    font-weight: bold;
+}
+
+.status-update {
+    background-color: #e6f0ff; /* light blue */
+    color: #0047b3;
+    font-weight: bold;
+}
+
+.status-delete {
+    background-color: #ffe6e6; /* light red */
+    color: #b30000;
+    font-weight: bold;
+}

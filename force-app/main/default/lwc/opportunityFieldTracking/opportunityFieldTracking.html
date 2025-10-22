@@ -1,0 +1,13 @@
+<template>
+    <template for:each={groupedOperations} for:item="group">
+        <lightning-card key={group.key} title={group.title} class="slds-m-vertical_medium">
+            <lightning-datatable
+                key-field="Id"
+                data={group.records}
+                columns={columns}
+                hide-checkbox-column>
+            </lightning-datatable>
+        </lightning-card>
+    </template>
+</template>
+
