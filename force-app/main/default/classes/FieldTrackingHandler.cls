@@ -32,6 +32,8 @@ public with sharing class FieldTrackingHandler {
             SObject oldRecord = (operationType == 'DELETE') ? record : (oldMap != null ? oldMap.get(record.Id) : null);
             String objectName = record.getSObjectType().getDescribe().getName();
             String identification;
+
+// For Opportunity, use Name
         if (objectName == 'Opportunity') {
             identification = (oldRecord != null) ? String.valueOf(oldRecord.get('Name')) : String.valueOf(record.get('Name'));
 

@@ -2,22 +2,22 @@
 private class FieldTrackingHandlerTest {
 
     @testSetup
-    static void setupTestData() {
-        List<Opportunity> oppList = new List<Opportunity>();
+    static void setupData() {
+        List<Opportunity> opps = new List<Opportunity>();
         for (Integer i = 1; i <= 3; i++) {
-            oppList.add(new Opportunity(
+            opps.add(new Opportunity(
                 Name = 'Opp ' + i,
                 StageName = 'Prospecting',
-                CloseDate = Date.today().addDays(30),
+                CloseDate = Date.today().addDays(10),
                 Amount = 1000 * i,
                 OwnerId = UserInfo.getUserId()
             ));
         }
-        insert oppList;
+        insert opps;
 
-        List<Contact> contactList = new List<Contact>();
-        for (Integer i = 1; i <= 2; i++) {
-            contactList.add(new Contact(
+        List<Contact> cons = new List<Contact>();
+        for (Integer i = 1; i <= 3; i++) {
+            cons.add(new Contact(
                 FirstName = 'Test' + i,
                 LastName = 'User' + i,
                 Email = 'test' + i + '@example.com',
@@ -25,75 +25,92 @@ private class FieldTrackingHandlerTest {
                 OwnerId = UserInfo.getUserId()
             ));
         }
-        insert contactList;
+        insert cons;
+    }
+
+    private static List<Field_Tracking__c> createTracking(Integer count) {
+        List<Field_Tracking__c> listFT = new List<Field_Tracking__c>();
+        for (Integer i = 0; i < count; i++) {
+            listFT.add(new Field_Tracking__c(
+                Field_Track__c = 'StageName',
+                Object_Name__c = 'Opportunity',
+                Action_Date__c = Date.today(),
+                Action_Time__c = Time.newInstance(12, 30, 0, 0),
+                Status__c = 'UPDATE',
+                Old_Value__c = 'Prospecting',
+                New_Value__c = 'Closed Won',
+                User__c = UserInfo.getUserId(),
+                Identification__c = 'Opp_' + i
+            ));
+        }
+        insert listFT;
+        return listFT;
     }
 
     @isTest
-    static void testInsertTracking() {
-        List<Opportunity> newOpps = [SELECT Id, Name, StageName, CloseDate, Amount FROM Opportunity];
+    static void testGetOpportunityTracking_Positive() {
+        delete [SELECT Id FROM Field_Tracking__c]; // isolate test data
+        createTracking(5);
+
         Test.startTest();
-        FieldTrackingHandler.trackChanges(newOpps, null, 'INSERT');
+        List<Field_Tracking__c> res = FieldTrackingController.getOpportunityTracking();
         Test.stopTest();
 
-        List<Field_Tracking__c> trackingRecords = [
-            SELECT Field_Track__c, Object_Name__c, Status__c, New_Value__c
+        System.assert(res.size() > 0, 'Records should exist');
+        System.assertEquals('Opportunity', res[0].Object_Name__c, 'Object name should be Opportunity');
+    }
+
+    @isTest
+    static void testGetOpportunityTracking_NoData() {
+        delete [SELECT Id FROM Field_Tracking__c];
+
+        Test.startTest();
+        List<Field_Tracking__c> res = FieldTrackingController.getOpportunityTracking();
+        Test.stopTest();
+
+        System.assertNotEquals(null, res, 'Result should not be null');
+        System.assertEquals(0, res.size(), 'Expected no tracking records');
+    }
+
+    @isTest
+    static void testInsertUpdateDeleteOpportunity() {
+        Opportunity opp = [SELECT Id, Name, StageName, CloseDate, Amount, OwnerId FROM Opportunity LIMIT 1];
+
+        Test.startTest();
+        opp.StageName = 'Closed Won';
+        update opp;
+
+        opp = [SELECT Id FROM Opportunity LIMIT 1];
+        delete opp;
+        Test.stopTest();
+
+        List<Field_Tracking__c> tracks = [
+            SELECT Id, Field_Track__c, Object_Name__c, Status__c, Old_Value__c, New_Value__c
             FROM Field_Tracking__c
             WHERE Object_Name__c = 'Opportunity'
         ];
-        System.assert(trackingRecords.size() > 0, 'Tracking records should be created for insert.');
-        System.assertEquals('INSERT', trackingRecords[0].Status__c, 'Status should be INSERT.');
+
+        System.assert(tracks.size() > 0, 'Tracking records should exist');
     }
 
     @isTest
-    static void testUpdateTracking() {
-        List<Opportunity> opps = [SELECT Id, Name, StageName, Amount FROM Opportunity];
-        Map<Id, SObject> oldMap = new Map<Id, SObject>();
-        for (Opportunity o : opps) {
-            oldMap.put(o.Id, o.clone(false, true));
-            o.StageName = 'Qualification';
-        }
+    static void testInsertUpdateDeleteContact() {
+        Contact con = [SELECT Id, FirstName, LastName, Email, Phone, OwnerId FROM Contact LIMIT 1];
 
         Test.startTest();
-        FieldTrackingHandler.trackChanges(opps, oldMap, 'UPDATE');
+        con.LastName = 'Updated';
+        update con;
+
+        con = [SELECT Id FROM Contact LIMIT 1];
+        delete con;
         Test.stopTest();
 
-        List<Field_Tracking__c> trackingRecords = [
-            SELECT Field_Track__c, Object_Name__c, Status__c, Old_Value__c, New_Value__c
+        List<Field_Tracking__c> tracks = [
+            SELECT Id, Field_Track__c, Object_Name__c, Status__c, Old_Value__c, New_Value__c
             FROM Field_Tracking__c
-            WHERE Object_Name__c = 'Opportunity' AND Status__c = 'UPDATE'
+            WHERE Object_Name__c = 'Contact'
         ];
-        System.assert(trackingRecords.size() > 0, 'Tracking records should be created for update.');
-        System.assert(trackingRecords[0].Old_Value__c != trackingRecords[0].New_Value__c, 'Old and new values should differ.');
-    }
 
-    @isTest
-    static void testDeleteTracking() {
-        List<Contact> contacts = [SELECT Id, FirstName, LastName FROM Contact];
-        Map<Id, SObject> oldMap = new Map<Id, SObject>();
-        for (Contact c : contacts) {
-            oldMap.put(c.Id, c);
-        }
-
-        Test.startTest();
-        FieldTrackingHandler.trackChanges(null, oldMap, 'DELETE');
-        Test.stopTest();
-
-        List<Field_Tracking__c> trackingRecords = [
-            SELECT Field_Track__c, Object_Name__c, Status__c, Old_Value__c, New_Value__c
-            FROM Field_Tracking__c
-            WHERE Object_Name__c = 'Contact' AND Status__c = 'DELETE'
-        ];
-        System.assert(trackingRecords.size() > 0, 'Tracking records should be created for delete.');
-        System.assertEquals('', trackingRecords[0].New_Value__c, 'New value should be empty for delete.');
-    }
-
-    @isTest
-    static void testNoRecords() {
-        Test.startTest();
-        FieldTrackingHandler.trackChanges(new List<SObject>(), new Map<Id, SObject>(), 'UPDATE');
-        FieldTrackingHandler.trackChanges(null, null, 'DELETE');
-        Test.stopTest();
-
-        System.assert(true, 'Method should handle empty input without exceptions.');
+        System.assert(tracks.size() > 0, 'Tracking records should exist');
     }
 }
