@@ -5,15 +5,15 @@ export default class OpportunityFieldTracking extends LightningElement {
     @track groupedOperations = [];
 
     columns = [
-        { label: 'Field Name', fieldName: 'Harsh02__Field_Track__c' },
-        { label: 'Object Name', fieldName: 'Harsh02__Object_Name__c' },
-        { label: 'Date', fieldName: 'Harsh02__Action_Date__c', type: 'date' },
-        { label: 'Time', fieldName: 'Harsh02__Action_Time__c', type: 'time'},
-        { label: 'Status', fieldName: 'Harsh02__Status__c' },
-        { label: 'Old Value', fieldName: 'Harsh02__Old_Value__c' },
-        { label: 'New Value', fieldName: 'Harsh02__New_Value__c' },
-        { label: 'User', fieldName: 'Harsh02__User__c' },
-        { label: 'Identifier', fieldName: 'Harsh02__Identification__c' }
+        { label: 'Field Name', fieldName: 'Field_Track__c' },
+        { label: 'Object Name', fieldName: 'Object_Name__c' },
+        { label: 'Date', fieldName: 'Action_Date__c', type: 'date' },
+        { label: 'Time', fieldName: 'Action_Time__c', type: 'time'},
+        { label: 'Status', fieldName: 'Status__c' },
+        { label: 'Old Value', fieldName: 'Old_Value__c' },
+        { label: 'New Value', fieldName: 'New_Value__c' },
+        { label: 'User', fieldName: 'User__c' },
+        { label: 'Identifier', fieldName: 'Identification__c' }
     ];
 
     @wire(getOpportunityTracking)
@@ -29,7 +29,7 @@ export default class OpportunityFieldTracking extends LightningElement {
         const groups = {};
 
         records.forEach(record => {
-            const groupKey = record.Harsh02__Status__c;
+            const groupKey = record.Status__c;
 
             if (!groups[groupKey]) {
                 groups[groupKey] = {
