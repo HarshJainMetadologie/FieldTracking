@@ -49,7 +49,7 @@ private class FieldTrackingHandlerTest {
 
     @isTest
     static void testGetOpportunityTracking_Positive() {
-        delete [SELECT Id FROM Field_Tracking__c]; // isolate test data
+        delete [SELECT Id FROM Field_Tracking__c]; 
         createTracking(5);
 
         Test.startTest();
