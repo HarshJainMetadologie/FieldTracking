@@ -43,6 +43,7 @@ export default class OpportunityFieldTracking extends LightningElement {
         records.forEach(record => {
             const statusField = this.nsPrefix + 'Status__c';
             const groupKey = record[statusField];
+            console.log(groupKey);
 
             if (!groups[groupKey]) {
                 groups[groupKey] = {
